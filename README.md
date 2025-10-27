@@ -85,27 +85,28 @@
     </div>
 
     <div class="content">
+      <!-- ДОКУМЕНТ -->
       <section id="panel-doc">
         <div class="card">
           <label class="drop">
-            <!-- ✅ Убрали capture="environment" -->
+            <!-- Оставляем image/*, чтобы iPhone мог выбрать HEIC; без capture -->
             <input class="file" id="frontInput" type="file" accept="image/*">
             <img id="frontPreview" alt="Лицевая сторона">
             <div class="ph">Тапните, чтобы выбрать фото из галереи</div>
-            <div class="hint">Лицевая сторона • JPG/PNG, до 10 МБ</div>
+            <div class="hint">Лицевая сторона • HEIC/JPG/PNG, до 10 МБ</div>
           </label>
         </div>
         <div class="card">
           <label class="drop">
-            <!-- ✅ Убрали capture="environment" -->
             <input class="file" id="backInput" type="file" accept="image/*">
             <img id="backPreview" alt="Оборотная сторона">
             <div class="ph">Тапните, чтобы выбрать фото из галереи</div>
-            <div class="hint">Оборотная сторона • JPG/PNG, до 10 МБ</div>
+            <div class="hint">Оборотная сторона • HEIC/JPG/PNG, до 10 МБ</div>
           </label>
         </div>
       </section>
 
+      <!-- РЕКВИЗИТЫ -->
       <section id="panel-req" hidden>
         <div class="list">
           <div class="row"><div><div class="label">ФИО</div><div class="value"><input id="fio" placeholder="Иванов Иван Иванович"></div></div><button class="copy" data-copy="fio" title="Копировать"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg></button></div>
@@ -118,13 +119,14 @@
       </section>
     </div>
 
+    <!-- низ: для «Документ» две кнопки, для «Реквизиты» одна -->
     <div class="footer">
       <button class="btn btn-primary" id="btn-present">
         <svg viewBox="0 0 24 24" fill="none">
-          <path d="M3 3h7v7H3V3zm2 2v3h3V5H5z" fill="#fff"/>
-          <path d="M14 3h7v7h-7V3zm2 2v3h3V5h-3z" fill="#fff"/>
+          <path d="M3 3h7v7H3V3zm2 2v3h3В5H5z" fill="#fff"/>
+          <path d="M14 3h7v7h-7V3zm2 2v3h3В5h-3z" fill="#fff"/>
           <path d="M3 14h7v7H3v-7zm2 2v3h3v-3H5z" fill="#fff"/>
-          <path d="M14 14h3v3h-3zM17 17h4v4h-4zM21 14h-2v-2h2зM14 21h-2v-2h2з" fill="#fff"/>
+          <path d="M14 14h3v3h-3zM17 17h4v4h-4zM21 14h-2v-2h2zM14 21h-2v-2h2z" fill="#fff"/>
         </svg>
         Предъявить документ
       </button>
@@ -142,7 +144,11 @@
   </div>
 
 <script>
-  if (!window.isSecureContext) document.getElementById('warn').style.display = 'block';
+  // предупреждение если не https
+  if (!window.isSecureContext) {
+    document.getElementById('warn').style.display = 'block';
+  }
+
   const MAX = 10 * 1024 * 1024;
   const $ = id => document.getElementById(id);
   const toast = (m, ok=true)=>{
@@ -150,6 +156,7 @@
     t.style.display='block'; clearTimeout(t._to); t._to=setTimeout(()=>t.style.display='none',2400);
   };
 
+  // вкладки
   const tabDoc=$('tab-doc'), tabReq=$('tab-req');
   const panelDoc=$('panel-doc'), panelReq=$('panel-req');
   const btnPresent=$('btn-present'), btnSendDoc=$('btn-send-doc'), btnSendReq=$('btn-send-req');
@@ -167,26 +174,71 @@
   tabDoc.onclick = showDoc;
   tabReq.onclick = showReq;
 
+  // детектор iOS (чтобы корректно подсказывать пользователю)
+  const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  // Универсальная привязка превью с fallback
   function bind(inputId, imgId){
     const input = $(inputId), img=$(imgId), box=input.closest('.drop');
+
     input.addEventListener('change', ()=>{
       const f = input.files && input.files[0];
       if(!f){ toast('Файл не выбран', false); return; }
       if(f.size>MAX){ toast('Файл больше 10 МБ', false); input.value=''; return; }
-      const reader = new FileReader();
-      reader.onload = e => {
-        img.src = e.target.result;
+
+      const name = (f.name||'').toLowerCase();
+      const type = (f.type||'').toLowerCase();
+      const isHeic = name.endsWith('.heic') || name.endsWith('.heif') || type.includes('heic') || type.includes('heif');
+
+      // 1) основная попытка — через objectURL (быстро и экономит память)
+      let objectUrl = URL.createObjectURL(f);
+      let triedDataUrl = false;
+
+      const showOk = () => {
         img.style.display='block';
-        box.querySelector('.ph').style.display='none';
-        box.querySelector('.hint').style.display='none';
+        const ph = box.querySelector('.ph'); if(ph) ph.style.display='none';
+        const hint = box.querySelector('.hint'); if(hint) hint.style.display='none';
       };
-      reader.onerror = ()=> toast('Не удалось прочитать файл', false);
-      reader.readAsDataURL(f);
+
+      img.onload = () => {
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        showOk();
+      };
+
+      img.onerror = () => {
+        // 2) fallback — пробуем dataURL (на iOS для HEIC это часто помогает)
+        if (!triedDataUrl) {
+          triedDataUrl = true;
+          if (objectUrl) { URL.revokeObjectURL(objectUrl); objectUrl = null; }
+
+          const r = new FileReader();
+          r.onload = e => { img.src = e.target.result; };
+          r.onerror = () => {
+            input.value='';
+            toast('Не удалось прочитать файл.', false);
+          };
+          r.readAsDataURL(f);
+          return;
+        }
+
+        // 3) если и dataURL не сработал — даём понятный совет
+        input.value='';
+        const msgHeic =
+          IS_IOS
+            ? 'Не удалось отобразить фото. Попробуйте выбрать другое изображение (JPG/PNG).'
+            : 'Ваш браузер не показывает HEIC. Пожалуйста, выберите JPG/PNG.';
+        toast(isHeic ? msgHeic : 'Не удалось отобразить изображение. Попробуйте JPG/PNG.', false);
+      };
+
+      img.src = objectUrl;
     });
   }
+
   bind('frontInput','frontPreview');
   bind('backInput','backPreview');
 
+  // действия
   $('btn-present').onclick = ()=>{
     const ok = $('frontInput').files.length && $('backInput').files.length;
     toast(ok ? 'Документ готов к предъявлению ✅' : 'Загрузите обе стороны документа', ok);
@@ -195,6 +247,8 @@
   $('btn-send-doc').onclick = ()=>{
     const f = $('frontInput').files[0], b = $('backInput').files[0];
     if(!f || !b) return toast('Загрузите обе стороны документа', false);
+    const fd = new FormData(); fd.append('front', f); fd.append('back', b);
+    console.log('Отправка документа', [...fd.entries()]);
     toast('Документ подготовлен к отправке (демо).', true);
   };
 
@@ -211,6 +265,7 @@
     toast('Реквизиты подготовлены к отправке (демо).', true);
   };
 
+  // по умолчанию показываем «Документ»
   showDoc();
 </script>
 </body>
