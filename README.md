@@ -88,18 +88,20 @@
       <section id="panel-doc">
         <div class="card">
           <label class="drop">
-            <input class="file" id="frontInput" type="file" accept="image/*" capture="environment">
+            <!-- ✅ Убрали capture="environment" -->
+            <input class="file" id="frontInput" type="file" accept="image/*">
             <img id="frontPreview" alt="Лицевая сторона">
-            <div class="ph">Тапните, чтобы выбрать или сфотографировать</div>
-            <div class="hint">Лицевая сторона • HEIC/JPG/PNG, до 10 МБ</div>
+            <div class="ph">Тапните, чтобы выбрать фото из галереи</div>
+            <div class="hint">Лицевая сторона • JPG/PNG, до 10 МБ</div>
           </label>
         </div>
         <div class="card">
           <label class="drop">
-            <input class="file" id="backInput" type="file" accept="image/*" capture="environment">
+            <!-- ✅ Убрали capture="environment" -->
+            <input class="file" id="backInput" type="file" accept="image/*">
             <img id="backPreview" alt="Оборотная сторона">
-            <div class="ph">Тапните, чтобы выбрать или сфотографировать</div>
-            <div class="hint">Оборотная сторона • HEIC/JPG/PNG, до 10 МБ</div>
+            <div class="ph">Тапните, чтобы выбрать фото из галереи</div>
+            <div class="hint">Оборотная сторона • JPG/PNG, до 10 МБ</div>
           </label>
         </div>
       </section>
@@ -122,7 +124,7 @@
           <path d="M3 3h7v7H3V3zm2 2v3h3V5H5z" fill="#fff"/>
           <path d="M14 3h7v7h-7V3zm2 2v3h3V5h-3z" fill="#fff"/>
           <path d="M3 14h7v7H3v-7zm2 2v3h3v-3H5z" fill="#fff"/>
-          <path d="M14 14h3v3h-3zM17 17h4v4h-4zM21 14h-2v-2h2zM14 21h-2v-2h2z" fill="#fff"/>
+          <path d="M14 14h3v3h-3zM17 17h4v4h-4zM21 14h-2v-2h2зM14 21h-2v-2h2з" fill="#fff"/>
         </svg>
         Предъявить документ
       </button>
@@ -193,8 +195,6 @@
   $('btn-send-doc').onclick = ()=>{
     const f = $('frontInput').files[0], b = $('backInput').files[0];
     if(!f || !b) return toast('Загрузите обе стороны документа', false);
-    const fd = new FormData(); fd.append('front', f); fd.append('back', b);
-    console.log('Отправка документа', [...fd.entries()]);
     toast('Документ подготовлен к отправке (демо).', true);
   };
 
