@@ -1,7 +1,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
 <title>Удостоверение личности</title>
 <style>
   :root{
@@ -10,42 +10,47 @@
     --bg:#f2f4f7; --card:#ffffff; --border:#e6e9ee;
     --tabs-bg:#e8ebee;
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%}
   body{margin:0;background:#000;font:15px/1.45 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,Arial,sans-serif;color:var(--ink)}
-  .phone{width:390px;height:844px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative}
+  .phone{width:390px;min-height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative}
 
-  /* статусбар */
+  /* статусбар-муляж */
   .statusbar{height:44px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;color:#000;font-weight:600;font-size:13px}
   .sb-right{display:flex;gap:6px}.dot{width:7px;height:7px;border-radius:50%;background:#000;opacity:.9}
 
-  /* верхняя панель */
+  /* appbar */
   .appbar{position:relative;background:var(--card);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:center}
   .back{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:28px;height:28px;display:grid;place-items:center;cursor:pointer}
   .back svg{width:18px;height:18px}
   .title{font-weight:700;font-size:17px;white-space:nowrap}
 
-  /* область вкладок */
+  /* вкладки */
   .tabs-area{background:var(--tabs-bg);padding:10px 0;border-bottom:1px solid var(--border)}
   .tabs{display:flex;justify-content:center;background:var(--tabs-bg);border-radius:12px;gap:4px;padding:4px;max-width:320px;margin:0 auto}
   .tab{flex:1;padding:9px 0;border-radius:10px;font-weight:700;color:var(--ink);opacity:.65;background:transparent;border:none;cursor:pointer}
   .tab.active{background:#fff;opacity:1;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 
-  /* контент */
-  .content{padding:12px}
-  /* Документ */
-  .id-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:0 2px 8px rgba(17,20,24,.06);overflow:hidden;margin-bottom:14px}
-  .frame{aspect-ratio:5/3;width:100%;background:linear-gradient(180deg,#f7fafc,#eef2f7);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
-  .hint{position:absolute;inset:auto 0 10px 0;text-align:center;color:var(--muted);font-size:12px}
-  .frame img{max-width:96%;max-height:96%;border-radius:12px;display:none}
-  .hidden-input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .content{padding:12px 12px 128px}
 
-  /* Реквизиты */
+  /* карточки для фото */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:0 2px 8px rgba(17,20,24,.06);overflow:hidden;margin-bottom:14px;padding:10px}
+  .drop{position:relative;width:100%;aspect-ratio:5/3;border-radius:12px;border:1px solid var(--border);background:linear-gradient(180deg,#f7fafc,#eef2f7);overflow:hidden}
+  .drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+  .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#98a1aa;font-weight:600;text-align:center;padding:8px}
+  .hint{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:12px;color:#8a9097}
+  /* iOS-friendly: input поверх и не полностью скрыт */
+  .file{
+    position:absolute;inset:0;opacity:0.01; /* не 0! */
+    z-index:10; cursor:pointer;
+  }
+
+  /* блок реквизитов */
   .list{background:#fff;border:1px solid var(--border);border-radius:16px;padding:6px 8px}
   .row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 8px;border-bottom:1px solid #f1f3f6}
   .row:last-child{border-bottom:none}
   .label{font-size:12px;color:var(--muted);margin-bottom:2px}
-  .value{display:flex;align-items:center;gap:8px}
+  .value{display:flex;align-items:center}
   .value input{width:100%;border:none;background:transparent;padding:0;margin:0;font:15px/1.45 inherit;color:inherit}
   .value input:focus{outline:none}
   .copy{border:1px solid var(--border);background:#fff;border-radius:9px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer}
@@ -55,8 +60,7 @@
   .footer{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--border);padding:12px 12px 24px;margin:0 auto;max-width:390px}
   .btn{width:100%;border-radius:12px;padding:16px 18px;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;border:0}
   .btn svg{width:20px;height:20px}
-  .btn-primary{background:var(--blue);color:#fff}
-  .btn-primary:active{background:var(--blue-700)}
+  .btn-primary{background:var(--blue);color:#fff}.btn-primary:active{background:var(--blue-700)}
   .btn-outline{background:#fff;color:var(--ink);border:1.5px solid var(--border)}
   .link{display:block;text-align:center;margin-top:10px;color:var(--blue);text-decoration:none;font-weight:600}
 
@@ -79,7 +83,7 @@
       <div class="title">Удостоверение личности</div>
     </div>
 
-    <!-- Вкладки -->
+    <!-- вкладки -->
     <div class="tabs-area">
       <div class="tabs">
         <button class="tab active" id="tab-doc" type="button">Документ</button>
@@ -87,96 +91,60 @@
       </div>
     </div>
 
-    <!-- Контент -->
     <div class="content">
-      <!-- Документ -->
+      <!-- ДОКУМЕНТ -->
       <section id="panel-doc">
-        <div class="id-card">
-          <div class="frame" id="frontFrame">
-            <input class="hidden-input" id="frontInput" type="file" accept="image/jpeg,image/png">
-            <img id="frontPreview" alt="Лицевая сторона"/>
-            <div class="hint">Лицевая сторона — нажмите для выбора фото</div>
+        <div class="card">
+          <div class="drop">
+            <input class="file" id="frontInput" type="file" accept="image/*" capture="environment">
+            <img id="frontPreview" alt="Лицевая сторона">
+            <div class="ph">Тапните, чтобы выбрать или сфотографировать</div>
+            <div class="hint">Лицевая сторона • HEIC/JPG/PNG, до 10 МБ</div>
           </div>
         </div>
-        <div class="id-card">
-          <div class="frame" id="backFrame">
-            <input class="hidden-input" id="backInput" type="file" accept="image/jpeg,image/png">
-            <img id="backPreview" alt="Оборотная сторона"/>
-            <div class="hint">Оборотная сторона — нажмите для выбора фото</div>
+        <div class="card">
+          <div class="drop">
+            <input class="file" id="backInput" type="file" accept="image/*" capture="environment">
+            <img id="backPreview" alt="Оборотная сторона">
+            <div class="ph">Тапните, чтобы выбрать или сфотографировать</div>
+            <div class="hint">Оборотная сторона • HEIC/JPG/PNG, до 10 МБ</div>
           </div>
         </div>
       </section>
 
-      <!-- Реквизиты -->
+      <!-- РЕКВИЗИТЫ -->
       <section id="panel-req" hidden>
         <div class="list">
           <div class="row">
-            <div>
-              <div class="label">ФИО</div>
-              <div class="value"><input id="fio" placeholder="Иванов Иван Иванович"></div>
-            </div>
-            <button class="copy" data-copy="fio" title="Копировать">
-              <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg>
-            </button>
+            <div><div class="label">ФИО</div><div class="value"><input id="fio" placeholder="Иванов Иван Иванович"></div></div>
+            <button class="copy" data-copy="fio" title="Копировать"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg></button>
           </div>
-
           <div class="row">
-            <div>
-              <div class="label">ИИН</div>
-              <div class="value"><input id="iin" inputmode="numeric" pattern="[0-9]*" placeholder="000000000000"></div>
-            </div>
-            <button class="copy" data-copy="iin" title="Копировать">
-              <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg>
-            </button>
+            <div><div class="label">ИИН</div><div class="value"><input id="iin" inputmode="numeric" pattern="[0-9]*" placeholder="000000000000"></div></div>
+            <button class="copy" data-copy="iin" title="Копировать"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg></button>
           </div>
-
           <div class="row">
-            <div>
-              <div class="label">Дата рождения</div>
-              <div class="value"><input id="dob" type="date"></div>
-            </div>
-            <button class="copy" data-copy="dob" title="Копировать">
-              <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg>
-            </button>
+            <div><div class="label">Дата рождения</div><div class="value"><input id="dob" type="date"></div></div>
+            <button class="copy" data-copy="dob" title="Копировать"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg></button>
           </div>
-
           <div class="row">
-            <div>
-              <div class="label">Номер документа</div>
-              <div class="value"><input id="docnum" placeholder="XXXXXXXXX"></div>
-            </div>
-            <button class="copy" data-copy="docnum" title="Копировать">
-              <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg>
-            </button>
+            <div><div class="label">Номер документа</div><div class="value"><input id="docnum" placeholder="XXXXXXXXX"></div></div>
+            <button class="copy" data-copy="docnum" title="Копировать"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg></button>
           </div>
-
           <div class="row">
-            <div>
-              <div class="label">Дата выдачи</div>
-              <div class="value"><input id="issued" type="date"></div>
-            </div>
-            <button class="copy" data-copy="issued" title="Копировать">
-              <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg>
-            </button>
+            <div><div class="label">Дата выдачи</div><div class="value"><input id="issued" type="date"></div></div>
+            <button class="copy" data-copy="issued" title="Копировать"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg></button>
           </div>
-
           <div class="row">
-            <div>
-              <div class="label">Срок действия</div>
-              <div class="value"><input id="expiry" type="date"></div>
-            </div>
-            <button class="copy" data-copy="expiry" title="Копировать">
-              <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg>
-            </button>
+            <div><div class="label">Срок действия</div><div class="value"><input id="expiry" type="date"></div></div>
+            <button class="copy" data-copy="expiry" title="Копировать"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke-width="2"/><rect x="4" y="4" width="11" height="11" rx="2" stroke-width="2"/></svg></button>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- нижние кнопки -->
     <div class="footer">
-      <button class="btn btn-primary" id="action-doc">
-        <!-- QR иконка -->
+      <button class="btn btn-primary" id="btn-doc">
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M3 3h7v7H3V3zm2 2v3h3V5H5z" fill="#fff"/>
           <path d="M14 3h7v7h-7V3zm2 2v3h3V5h-3z" fill="#fff"/>
@@ -185,11 +153,8 @@
         </svg>
         Предъявить документ
       </button>
-      <button class="btn btn-outline" id="action-req" hidden>
-        <!-- иконка «поделиться» -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="#111418" stroke-width="2" stroke-linejoin="round">
-          <path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/>
-        </svg>
+      <button class="btn btn-outline" id="btn-req" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#111418" stroke-width="2" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
         Отправить реквизиты
       </button>
     </div>
@@ -198,70 +163,53 @@
   </div>
 
 <script>
-  const MAX_SIZE = 10 * 1024 * 1024;
-  const ACCEPT = ['image/jpeg','image/png'];
+  const MAX = 10 * 1024 * 1024;  // 10 МБ
   const $ = id => document.getElementById(id);
   const toast = (m, ok=true)=>{
     const t=$('toast'); t.textContent=m; t.classList.toggle('err',!ok);
     t.style.display='block'; clearTimeout(t._to); t._to=setTimeout(()=>t.style.display='none',2200);
   };
 
-  // переключение вкладок
-  const tabDoc = $('tab-doc'), tabReq = $('tab-req');
-  const panelDoc = $('panel-doc'), panelReq = $('panel-req');
-  const actionDoc = $('action-doc'), actionReq = $('action-req');
+  // вкладки
+  const tabDoc=$('tab-doc'), tabReq=$('tab-req');
+  const panelDoc=$('panel-doc'), panelReq=$('panel-req');
+  const btnDoc=$('btn-doc'), btnReq=$('btn-req');
+  tabDoc.onclick=()=>{tabDoc.classList.add('active');tabReq.classList.remove('active');panelDoc.hidden=false;panelReq.hidden=true;btnDoc.hidden=false;btnReq.hidden=true;};
+  tabReq.onclick=()=>{tabReq.classList.add('active');tabDoc.classList.remove('active');panelDoc.hidden=true;panelReq.hidden=false;btnDoc.hidden=true;btnReq.hidden=false;};
 
-  tabDoc.addEventListener('click', ()=>{
-    tabDoc.classList.add('active'); tabReq.classList.remove('active');
-    panelDoc.hidden = false; panelReq.hidden = true;
-    actionDoc.hidden = false; actionReq.hidden = true;
-  });
-  tabReq.addEventListener('click', ()=>{
-    tabReq.classList.add('active'); tabDoc.classList.remove('active');
-    panelDoc.hidden = true; panelReq.hidden = false;
-    actionDoc.hidden = true; actionReq.hidden = false;
-  });
-
-  // загрузка изображений
-  function bindUpload(frameId, inputId, previewId){
-    const frame = $(frameId), input = $(inputId), preview = $(previewId);
-    const validate = (file)=>{
-      if(!file) return 'Файл не выбран';
-      if(!ACCEPT.includes(file.type)) return 'Допустимы JPG/PNG';
-      if(file.size>MAX_SIZE) return 'Файл больше 10 МБ';
-      return null;
-    };
-    frame.addEventListener('click', ()=>input.click());
-    input.addEventListener('change', ()=>{
-      const f = input.files[0]; const err = validate(f);
-      if(err) return toast(err,false);
-      const url = URL.createObjectURL(f); preview.src = url; preview.style.display='block';
-      frame.querySelector('.hint').style.display='none';
+  // загрузчики (iOS-safe — input поверх зоны, без программного click)
+  function bind(idInput, idPreview){
+    const inp=$(idInput), img=$(idPreview), box=inp.parentElement;
+    inp.addEventListener('change', ()=>{
+      const f=inp.files[0]; if(!f){ toast('Файл не выбран', false); return; }
+      if(f.size>MAX){ toast('Файл больше 10 МБ', false); inp.value=""; return; }
+      const url = URL.createObjectURL(f);
+      img.src=url; img.style.display='block';
+      box.querySelector('.ph').style.display='none';
+      box.querySelector('.hint').style.display='none';
     });
   }
-  bindUpload('frontFrame','frontInput','frontPreview');
-  bindUpload('backFrame','backInput','backPreview');
+  bind('frontInput','frontPreview');
+  bind('backInput','backPreview');
 
-  // действие по кнопке Документ
-  actionDoc.addEventListener('click', ()=>{
+  btnDoc.onclick=()=>{
     const ok = $('frontInput').files.length && $('backInput').files.length;
     toast(ok ? 'Документ готов к предъявлению ✅' : 'Загрузите обе стороны документа', ok);
-  });
+  };
 
-  // копирование в реквизитах
+  // копирование
   document.querySelectorAll('.copy').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
       const id = btn.getAttribute('data-copy');
-      const el = $(id);
       try{
-        await navigator.clipboard.writeText(el.value || '');
+        await navigator.clipboard.writeText($(id).value||'');
         toast('Скопировано', true);
       }catch{ toast('Не удалось скопировать', false); }
     });
   });
 
-  // отправка реквизитов (демо)
-  actionReq.addEventListener('click', ()=>{
+  // кнопка "Отправить реквизиты" (демо)
+  btnReq.onclick=()=>{
     const data = {
       fio: $('fio').value.trim(),
       iin: $('iin').value.trim(),
@@ -271,13 +219,8 @@
       expiry: $('expiry').value
     };
     console.log('Реквизиты к отправке:', data);
-    toast('Реквизиты подготовлены к отправке (демо). Подключите сервер.', true);
-
-    // Пример реальной отправки:
-    // fetch('/api/send-requisites',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
-    //   .then(r=>r.ok?toast('Отправлено. Спасибо!',true):Promise.reject())
-    //   .catch(()=>toast('Ошибка отправки',false));
-  });
+    toast('Реквизиты подготовлены к отправке (демо).', true);
+  };
 </script>
 </body>
 </html>
