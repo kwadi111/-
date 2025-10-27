@@ -93,9 +93,23 @@
     </section>
   </div>
   <div class="footer">
-    <button class="btn btn-primary" id="btn-present">Предъявить документ</button>
-    <button class="btn btn-outline" id="btn-send-doc">Отправить документ</button>
-    <button class="btn btn-outline" id="btn-send-req" hidden>Отправить реквизиты</button>
+    <button class="btn btn-primary" id="btn-present">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M3 3h7v7H3V3zm2 2v3h3В5H5z" fill="#fff"/>
+        <path d="M14 3h7v7h-7V3zm2 2в3h3В5h-3z" fill="#fff"/>
+        <path d="M3 14h7v7H3в-7zm2 2в3h3в-3H5з" fill="#fff"/>
+        <path d="M14 14h3v3h-3зM17 17h4v4h-4зM21 14h-2в-2h2зM14 21h-2в-2h2з" fill="#fff"/>
+      </svg>
+      Предъявить документ
+    </button>
+    <button class="btn btn-outline" id="btn-send-doc">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#111418" stroke-width="2" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      Отправить документ
+    </button>
+    <button class="btn btn-outline" id="btn-send-req" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#111418" stroke-width="2" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      Отправить реквизиты
+    </button>
   </div>
   <div class="toast" id="toast"></div>
 </div>
