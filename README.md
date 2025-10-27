@@ -2,6 +2,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="white">
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
 <title>Удостоверение личности</title>
 <style>
   :root{--blue:#1e9ff2;--blue-700:#138ad6;--ink:#111418;--muted:#6b7280;--bg:#f2f4f7;--card:#ffffff;--border:#e6e9ee;--tabs-bg:#e8ebee}
