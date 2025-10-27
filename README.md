@@ -51,7 +51,13 @@
   .title{font-weight:700;font-size:17px;margin-left:4px}
 
   /* Tabs */
-  .tabs{display:flex;gap:8px;padding:10px 12px 0}
+  .tabs{
+    display:flex;
+    gap:8px;
+    justify-content:center;      /* центрирование */
+    width:fit-content;
+    margin:10px auto 0;          /* центрирование по горизонтали */
+  }
   .tab{
     flex:0 0 auto;padding:8px 14px;border-radius:999px;font-weight:600;
     border:1px solid var(--border);background:var(--card);color:var(--ink);cursor:pointer;
@@ -87,7 +93,9 @@
   .primary{
     width:100%;border:0;border-radius:12px;padding:16px 18px;
     font-weight:700;font-size:16px;color:#fff;background:var(--kaspi-blue);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
   }
+  .primary svg{width:20px;height:20px;stroke:#fff}
   .primary:active{background:var(--kaspi-blue-700)}
   .link{display:block;text-align:center;margin-top:10px;color:var(--kaspi-blue);text-decoration:none;font-weight:600}
 
@@ -141,7 +149,16 @@
 
     <!-- Bottom buttons -->
     <div class="footer">
-      <button class="primary" id="showBtn" type="button">Предъявить документ</button>
+      <button class="primary" id="showBtn" type="button">
+        <!-- QR иконка -->
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 3h7v7H3V3zm2 2v3h3V5H5z" fill="#fff"/>
+          <path d="M14 3h7v7h-7V3zm2 2v3h3V5h-3z" fill="#fff"/>
+          <path d="M3 14h7v7H3v-7zm2 2v3h3v-3H5z" fill="#fff"/>
+          <path d="M14 14h3v3h-3zM17 17h4v4h-4zM21 14h-2v-2h2zM14 21h-2v-2h2z" fill="#fff"/>
+        </svg>
+        Предъявить документ
+      </button>
       <a href="#" id="sendLink" class="link">Отправить документ</a>
     </div>
 
